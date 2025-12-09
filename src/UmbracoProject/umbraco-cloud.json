@@ -1,7 +1,17 @@
 {
   "Deploy": {
     "Project": {
-      "Workspaces": []
+      "Name": "nordex food",
+      "Alias": "nordex-food",
+      "Id": "1b73d3f6-b23f-4d8f-b2c9-84f3266b4261",
+      "Workspaces": [
+        {
+          "Id": "128110b6-375b-41fc-85fb-1a228c4d7e40",
+          "Name": "Live",
+          "Type": "live",
+          "Url": "https://nordex-food.euwest01.umbraco.io"
+        }
+      ]
     },
     "Settings": {}
   },
