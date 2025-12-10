@@ -7,15 +7,15 @@ param()
 $ErrorActionPreference = 'Stop'
 
 function Write-Info($message) {
-    Write-Host "[buildFrontend] $message" -ForegroundColor Cyan
+    Write-Output "[buildFrontend] $message"
 }
 
 function Write-Warn($message) {
-    Write-Host "[buildFrontend] $message" -ForegroundColor Yellow
+    Write-Output "[buildFrontend] warn : $message"
 }
 
 function Write-Err($message) {
-    Write-Host "[buildFrontend] ERROR: $message" -ForegroundColor Red
+    Write-Output "[buildFrontend] error : $message"
 }
 
 # Resolve repo root and frontend path based on script location
