@@ -415,6 +415,13 @@ healthchecksdb
 **/Views/Partials/Forms/Themes/bootstrap3-horizontal/
 **/Views/Partials/Forms/Themes/default/
 
+src/.idea
+src/frontend/src/components/blocks/TagFilterExample.vue
+src/frontend/src/components/counter-block.ts
+src/NordexFood/Controllers/Api/LanguageController.cs
+src/wwwroot/frontend/assets
+src/NordexFood/wwwroot/frontend/assets
+
 # Allow NuGet packages from local source folder
 !src/LocalPackages/*.nupkg
 !src/LocalPackages/*.snupkg

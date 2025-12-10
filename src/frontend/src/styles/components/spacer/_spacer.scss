@@ -1,0 +1,39 @@
+﻿.spacer-small {
+  height: 2rem;
+}
+
+.spacer-medium {
+  height: 4rem;
+}
+
+.spacer-large {
+  height: 8rem;
+}
+
+@media (max-width: 768px) {
+  .spacer-small {
+    height: 1.5rem;
+  }
+  
+  .spacer-medium {
+    height: 3rem;
+  }
+
+  .spacer-large {
+    height: 6rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .spacer-small {
+    height: 1rem;
+  }
+
+  .spacer-medium {
+    height: 2rem;
+  }
+
+  .spacer-large {
+    height: 4rem;
+  }
+}

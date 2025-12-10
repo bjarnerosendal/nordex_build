@@ -1,0 +1,194 @@
+// ============================================
+// Document List Component Styles
+// ============================================
+
+.document-list-block {
+  a {
+    &:hover{
+      text-decoration: none;
+      .document-item {
+        background: $nordex-brown;
+        .document-meta, .document-name, .document-size, .document-type {
+          color: $white;
+        }
+        .document-image {
+          img {
+            filter: brightness(0.7);
+          }
+        }
+      }
+    }
+  }
+  .document-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .document-item {
+   
+    background: $nordex-orange;
+    transition: all 0.3s ease;
+    
+   
+  }
+  
+  .document-icon {
+
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, $nordex-red, $nordex-orange);
+    border-radius: 8px;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    
+    svg {
+      color: $white;
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  .document-details {
+    flex: 1;
+    min-width: 0; // Prevents flex item from overflowing
+  }
+  
+  .document-name {
+    display: block;
+    font-weight: 600;
+    color: $dark;
+    text-decoration: none;
+    margin-bottom: 0.25rem;
+    font-size: 1.25rem; // 20px if root font-size is 16px
+    line-height: 1.625rem; // 26px if root font-size is 16px
+    
+    &:hover {
+
+      text-decoration: none;
+    }
+    
+    // Truncate long file names
+    
+    overflow: hidden;
+ 
+    max-width: 100%;
+  }
+  
+  .document-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: $gray-600;
+  }
+  
+  .document-type {
+    font-weight: 500;
+    color: $nordex-red;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .document-size {
+    color: $gray-600;
+  }
+  
+  .document-download {
+    margin-left: 1rem;
+    flex-shrink: 0;
+    
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border-color: $nordex-red;
+      color: $nordex-red;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: $nordex-red;
+        color: $white;
+        transform: scale(1.1);
+      }
+      
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+  
+  .document-list-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: $gray-600;
+    font-style: italic;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .document-list-block {
+    .document-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .document-icon {
+      margin-right: 0;
+      align-self: flex-start;
+    }
+    
+    .document-details {
+      width: 100%;
+    }
+    
+    .document-name {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+    }
+    
+    .document-download {
+      margin-left: 0;
+      align-self: flex-end;
+    }
+    
+    .document-meta {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+}
+
+// Smaller screens
+@media (max-width: 576px) {
+  .document-list-block {
+    padding: 1rem 0;
+    
+    .document-list-title {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    .document-item {
+      padding: 0.75rem;
+    }
+    
+    .document-icon {
+      width: 40px;
+      height: 40px;
+      
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}

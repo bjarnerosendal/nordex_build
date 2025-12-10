@@ -1,0 +1,247 @@
+// ============================================
+// Rich Text Block Component Styles
+// ============================================
+
+.rich-text-block {
+  position: relative;
+
+  .rich-text-content {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: $gray-700;
+    max-width: 950px;
+
+    // Headings
+    h1, h2, h3, h4, h5, h6 {
+      color: $nordex-brown;
+      text-transform: uppercase;
+      font-weight: $font-weight-black;
+      margin-bottom: 1rem;
+      margin-top: 1.5rem;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+    h2 {
+      font-size: 3.125rem;
+      line-height: 1.875rem; // 30px in rem (assuming base font-size is 16px)
+      margin-bottom: 1.5rem;
+    }
+    h3 {
+      font-size: 1.875rem;
+      line-height: 1.875rem; // 30px in rem (assuming base font-size is 16px)
+      margin-bottom: 1.5rem;
+    }
+
+    // Paragraphs
+    p {
+      margin-bottom: 1rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    // Lists
+    ul, ol {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    // Blockquotes
+    blockquote {
+      border-left: 10px solid $nordex-pink;
+      padding: 1rem;
+      margin: 1.5rem 0;
+
+      font-style: italic;
+      color: $nordex-brown;
+      background-color: $nordex-pink-alt;
+      border-radius: 0.5rem;
+    }
+
+    // Links
+    a {
+      color: $nordex-brown;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+
+      &:hover, &:focus {
+        text-decoration: none;
+      }
+    }
+
+    // Images
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    // Tables
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba($black, 0.1);
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid $gray-300;
+    }
+
+    th {
+      background-color: $nordex-red;
+      color: $white;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: $gray-100;
+    }
+
+    tr:hover {
+      background-color: rgba($nordex-orange, 0.05);
+    }
+
+    // Code
+    code {
+      background-color: $gray-100;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+      color: $nordex-red;
+    }
+
+    pre {
+      background-color: $gray-100;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border-left: 4px solid $nordex-orange;
+
+      code {
+        background-color: transparent;
+        padding: 0;
+        color: $gray-700;
+      }
+    }
+
+    // Horizontal rule
+    hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(to right, $nordex-red, $nordex-orange);
+      margin: 2rem 0;
+      border-radius: 1px;
+    }
+  }
+
+  // Placeholder styling
+  .rich-text-placeholder {
+    border: 2px dashed $gray-300;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    background: $gray-100;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: $nordex-orange;
+      background: rgba($nordex-orange, 0.05);
+    }
+  }
+
+  // Text alignment utilities
+  &.text-left .rich-text-content {
+    text-align: left;
+  }
+
+  &.text-center .rich-text-content {
+    text-align: center;
+  }
+
+  &.text-right .rich-text-content {
+    text-align: right;
+  }
+
+  &.text-justify .rich-text-content {
+    text-align: justify;
+  }
+
+  // Background color adjustments
+  &[style*="background-color"] {
+    padding: 3rem 0;
+
+    .rich-text-content {
+      color: rgba($white, 0.9);
+
+      h1, h2, h3, h4, h5, h6 {
+        color: rgba($white, 0.95);
+      }
+
+      a {
+        color: rgba($nordex-orange, 0.9);
+
+        &:hover {
+          color: rgba($white, 0.95);
+        }
+      }
+    }
+
+    .rich-text-placeholder {
+      background: rgba($white, 0.1);
+      border-color: rgba($white, 0.3);
+      color: rgba($white, 0.8);
+
+      &:hover {
+        background: rgba($white, 0.2);
+        border-color: $nordex-orange;
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .rich-text-content {
+      font-size: 0.95rem;
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+      }
+      
+      h3 {
+        font-size: 1.25rem;
+      }
+      
+      blockquote {
+        padding: 0.75rem;
+        margin: 1rem 0;
+      }
+      
+      table {
+        font-size: 0.9rem;
+      }
+      
+      th, td {
+        padding: 0.5rem 0.75rem;
+      }
+    }
+  }
+}

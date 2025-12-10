@@ -1,0 +1,339 @@
+// ============================================
+// NordexFood Bootstrap Theme Variables
+// ============================================
+// This file contains all Bootstrap variable overrides
+// Import this BEFORE importing Bootstrap to customize the framework
+
+// ============================================
+// Brand Colors
+// ============================================
+
+// Primary brand colors - food/restaurant themed
+$nordex-red: #E41E26;         // Red (main brand)
+$nordex-orange: #FEF2E2;      // Vibrant orange (accent)´
+$nordex-orange-alt: #FDE3C6;      // Vibrant orange (accent)
+$nordex-orange-alt2: #FCD6A7;
+$nordex-cream: #fffef1;       // Warm cream (background)
+$nordex-cream-alt: #ECE8DB;  // Light cream (background) 
+$nordex-beige: #EBDDCC;       // Soft beige (background accent)
+$nordex-brown: #3D2411;       // Rich brown (text/secondary)
+$nordex-dark-brown: #3d241f;  // Dark brown (text/secondary)
+$nordex-gold: #ffa500;        // Golden accent
+$nordex-light-brown: #D4A574; // Light brown for quote backgrounds
+$nordex-light-blue: #EBEDE9;  // Light blue for quote backgrounds
+$nordex-green: #D6DCD1;      // Soft green (background accent)
+$nordex-blue: #DCE7F2;       // Soft blue (background accent)
+$nordex-pink: #FDD4D3;      // Soft pink (background accent)
+$nordex-pink-alt: #FEF2E2;  // Light soft pink (background accent)
+$nordex-light-grey: #B4AEAB;
+$nordex-grey: #8E857F;
+$nordex-dark-grey: #685D55;
+
+// Additional orange variations
+$nordex-orange-light: #FDE3C6;    // Light orange variation
+$nordex-orange-lighter: #FEF2E1;  // Lighter orange variation
+// Bootstrap color system overrides
+$primary: #E41E26;  // Red as primary color #fffef1
+$secondary: $nordex-brown;
+$success: #28a745;
+$info: #17a2b8;
+$warning: $nordex-gold;
+$danger: #E41E26;
+$light: $nordex-cream;
+$dark: #2d3436;
+$nav-link-hover-color: $nordex-red;
+// Additional theme colors
+$accent: $nordex-orange;
+$muted: #6c757d;
+
+// Gray scale
+$white: #FFFEF1;
+$gray-100: #f8f9fa;
+$gray-50: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black: #000000;
+
+// Text colors
+$text-muted: $gray-600;
+
+// ============================================
+// Typography
+// ============================================
+
+// Font stacks
+$font-family-sans-serif: 'Montserrat', 'Roboto', system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+$font-family-serif: 'Montserrat', Georgia, "Times New Roman", Times, serif;
+$font-family-monospace: 'JetBrains Mono', 'Fira Code', Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+// Font sizes
+$font-size-base: 1rem;        // 16px
+$font-size-lg: $font-size-base * 1.25;
+$font-size-sm: $font-size-base * 0.875;
+$font-size-xs: $font-size-base * 0.75;
+
+// Font weights
+$font-weight-lighter: 300;
+$font-weight-light: 400;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-bolder: 800;
+$font-weight-black: 900;
+// Headings
+$headings-font-family: $font-family-serif;
+$headings-font-weight: $font-weight-semibold;
+$headings-line-height: 1.2;
+$headings-color: $dark;
+
+
+// ============================================
+// Spacing & Layout
+// ============================================
+
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: $spacer * 0.25,  // 4px
+  2: $spacer * 0.5,   // 8px
+  3: $spacer,         // 16px
+  4: $spacer * 1.5,   // 24px
+  5: $spacer * 3,     // 48px
+  6: $spacer * 4,     // 64px
+  7: $spacer * 5,     // 80px
+  8: $spacer * 6      // 96px
+);
+
+// Change text color
+$body-color: #3a2418;
+
+// Nav link color
+$nav-link-color: $body-color;
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1320px
+);
+
+$navbar-padding-y: 0.08rem;
+
+// Grid system
+$grid-columns: 12;
+$grid-gutter-width: 1.5rem;
+$grid-row-columns: 6;
+
+// ============================================
+// Components
+// ============================================
+
+// Border radius
+$border-radius: 0.5rem;
+$border-radius-sm: 0.25rem;
+$border-radius-lg: 0.75rem;
+$border-radius-xl: 1rem;
+$border-radius-pill: 50rem;
+
+// Borders
+$border-width: 1px;
+$border-style: solid;
+$border-color: $gray-300;
+
+// Box shadow
+$box-shadow-sm: 0 0.125rem 0.25rem rgba($black, 0.075);
+$box-shadow: 0 0.5rem 1rem rgba($black, 0.15);
+$box-shadow-lg: 0 1rem 3rem rgba($black, 0.175);
+
+// ============================================
+// Body
+// ============================================
+
+$body-bg: $white;
+$body-color: $gray-800;
+$body-text-align: null;
+
+// ============================================
+// Links
+// ============================================
+
+$link-color: $primary;
+$link-decoration: none;
+$link-shade-percentage: 20%;
+$link-hover-color: darken($link-color, $link-shade-percentage);
+$link-hover-decoration: underline;
+
+// ============================================
+// Navigation & Header
+// ============================================
+
+// Navbar
+$navbar-brand-font-size: 1.5rem;
+$navbar-brand-font-weight: $font-weight-bold;
+$navbar-nav-link-padding-x: 1rem;
+$navbar-toggler-border-radius: $border-radius;
+
+// ============================================
+// Buttons
+// ============================================
+
+$btn-padding-y: 0.75rem;
+$btn-padding-x: 1.5rem;
+$btn-font-weight: $font-weight-medium;
+$btn-line-height: 1.5;
+$btn-border-radius: 1.5rem;
+$btn-border-radius-lg: $border-radius-lg;
+$btn-border-radius-sm: $border-radius-sm;
+
+// Button variants
+$btn-box-shadow: 0 0.125rem 0.25rem rgba($black, 0.075);
+$btn-active-box-shadow: inset 0 3px 5px rgba($black, 0.125);
+
+// ============================================
+// Cards
+// ============================================
+
+$card-spacer-y: 1.5rem;
+$card-spacer-x: 1.5rem;
+$card-title-spacer-y: 0.75rem;
+$card-title-color: null;
+$card-subtitle-color: $gray-600;
+$card-border-width: 0;
+$card-border-color: transparent;
+$card-border-radius: $border-radius-lg;
+$card-box-shadow: $box-shadow;
+$card-inner-border-radius: subtract($card-border-radius, $card-border-width);
+$card-cap-padding-y: $card-spacer-y * 0.5;
+$card-cap-padding-x: $card-spacer-x;
+$card-cap-bg: $gray-50;
+$card-cap-color: null;
+$card-height: null;
+$card-color: null;
+$card-bg: $white;
+$card-img-overlay-padding: 1.25rem;
+$card-group-margin: $grid-gutter-width * 0.5;
+
+// ============================================
+// Forms
+// ============================================
+
+$input-padding-y: 0.75rem;
+$input-padding-x: 1rem;
+$input-font-weight: $font-weight-normal;
+$input-line-height: 1.5;
+$input-bg: $white;
+$input-disabled-color: $gray-600;
+$input-disabled-bg: $gray-200;
+$input-disabled-border-color: null;
+$input-color: $gray-900;
+$input-border-color: $nordex-brown;
+$input-border-width: $border-width;
+$input-box-shadow: inset 0 1px 2px rgba($black, 0.075);
+$input-border-radius: $border-radius-pill;
+$input-border-radius-sm: $border-radius-sm;
+$input-border-radius-lg: $border-radius-lg;
+$input-focus-bg: $input-bg;
+$input-focus-border-color: rgba($primary, 0.75);
+$input-focus-color: $input-color;
+$input-focus-width: 0;
+$input-focus-box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+
+// ============================================
+// Tables
+// ============================================
+
+$table-cell-padding-y: 1rem;
+$table-cell-padding-x: 1rem;
+$table-cell-padding-y-sm: 0.5rem;
+$table-cell-padding-x-sm: 0.5rem;
+$table-cell-vertical-align: top;
+$table-color: $body-color;
+$table-bg: null;
+$table-accent-bg: null;
+$table-th-font-weight: $font-weight-semibold;
+$table-striped-color: $table-color;
+$table-striped-bg-factor: 0.05;
+$table-striped-bg: rgba($black, $table-striped-bg-factor);
+$table-active-color: $table-color;
+$table-active-bg-factor: 0.1;
+$table-active-bg: rgba($black, $table-active-bg-factor);
+$table-hover-color: $table-color;
+$table-hover-bg-factor: 0.075;
+$table-hover-bg: rgba($black, $table-hover-bg-factor);
+$table-border-factor: 0.1;
+$table-border-width: $border-width;
+$table-border-color: $border-color;
+$table-striped-order: odd;
+$table-striped-columns-order: even;
+$table-group-separator-color: currentcolor;
+$table-caption-color: $text-muted;
+$table-bg-scale: -80%;
+
+// ============================================
+// Utilities
+// ============================================
+$text-color: $nav-link-color;
+// Display utilities
+$displays: none, inline, inline-block, block, grid, inline-grid, table, table-row, table-cell, flex, inline-flex;
+
+// Position utilities
+$positions: static, relative, absolute, fixed, sticky;
+
+// ============================================
+// Custom CSS Variables
+// ============================================
+
+:root {
+  // Layout
+  --header-height: 70px;
+  --footer-height: 100px;
+  --content-max-width: 1400px;
+  --sidebar-width: 280px;
+  
+  // Brand colors as CSS variables
+  --nordex-red: #{$nordex-red};
+  --nordex-orange: #{$nordex-orange};
+  --nordex-cream: #{$nordex-cream};
+  --nordex-brown: #{$nordex-brown};
+
+  --nordex-gold: #{$nordex-gold};
+  --white: #{$white};
+  --nordex-brown-40: rgba(61, 36, 17, 0.4);
+
+  // Transitions
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+  
+  // Z-index scale
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  
+  // Hero section
+  --hero-min-height: 67vh;
+  --hero-padding: 4rem 0;
+  
+  // Content sections
+  --section-padding: 3rem 0;
+  --section-padding-lg: 5rem 0;
+  
+}
+
+
+$container-max-widths: map-merge(
+  $container-max-widths,
+  (xxl: 1450px)
+);

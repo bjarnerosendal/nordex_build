@@ -1,0 +1,227 @@
+// ============================================
+// Image Block Component Styles
+// ============================================
+
+.image-block {
+  position: relative;
+  padding: 2rem 0;
+
+  .image-figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.75rem;
+   
+    transition: all 0.3s ease;
+    background: $gray-100;
+
+    
+  }
+
+  .image-content {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+
+  .image-caption {
+    margin-top: 1rem;
+    color: $gray-600;
+    font-style: italic;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    max-width: 600px;
+  }
+
+  // Image size variations
+  &.image-small .image-wrapper {
+    max-width: 300px;
+    width: 100%;
+  }
+
+  &.image-medium .image-wrapper {
+    max-width: 600px;
+    width: 100%;
+  }
+
+  &.image-large .image-wrapper {
+    max-width: 800px;
+    width: 100%;
+  }
+
+  &.image-full .image-wrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  // Image alignment
+  &.image-left .image-figure {
+    align-items: flex-start;
+  }
+
+  &.image-center .image-figure {
+    align-items: center;
+  }
+
+  &.image-right .image-figure {
+    align-items: flex-end;
+  }
+
+  // Placeholder styling
+  .image-placeholder {
+    border: 2px dashed $gray-300;
+    border-radius: 0.75rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: $gray-100;
+    transition: all 0.3s ease;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      border-color: $nordex-orange;
+      background: rgba($nordex-orange, 0.05);
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+
+  .placeholder-icon {
+    color: $gray-500;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+
+    .image-placeholder:hover & {
+      color: $nordex-orange;
+    }
+  }
+
+  // Background color adjustments
+  &[style*="background-color"] {
+    padding: 3rem 0;
+
+    .image-caption {
+      color: rgba($white, 0.8);
+    }
+
+    .image-placeholder {
+      background: rgba($white, 0.1);
+      border-color: rgba($white, 0.3);
+      color: rgba($white, 0.8);
+
+      &:hover {
+        background: rgba($white, 0.2);
+        border-color: $nordex-orange;
+      }
+    }
+
+    .placeholder-icon {
+      color: rgba($white, 0.6);
+
+      .image-placeholder:hover & {
+        color: $nordex-orange;
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    &.image-large .image-wrapper,
+    &.image-medium .image-wrapper {
+      max-width: 100%;
+    }
+    
+    .image-caption {
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+    }
+    
+    .image-placeholder {
+      padding: 2rem 1rem;
+      min-height: 150px;
+    }
+    
+    .placeholder-icon svg {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .image-wrapper {
+      border-radius: 0.5rem;
+    }
+    
+    .image-placeholder {
+      border-radius: 0.5rem;
+    }
+    
+    &.image-small .image-wrapper {
+      max-width: 100%;
+    }
+  }
+
+  // Print styles
+  @media print {
+    .image-wrapper {
+      box-shadow: none;
+      border: 1px solid $gray-300;
+    }
+    
+    .image-content:hover {
+      transform: none;
+    }
+    
+    .image-wrapper:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    .image-wrapper {
+      border: 2px solid $black;
+    }
+    
+    .image-placeholder {
+      border-color: $black;
+    }
+  }
+
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    .image-wrapper,
+    .image-content,
+    .image-placeholder,
+    .placeholder-icon {
+      transition: none;
+    }
+    
+    .image-content:hover {
+      transform: none;
+    }
+    
+    .image-wrapper:hover {
+      transform: none;
+    }
+  }
+}
