@@ -1,0 +1,22 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "TagGrouper",
+  "version": "1.0.0",
+  "allowPublicAccess": true,
+  "extensions": [
+    {
+      "type": "propertyEditorUi",
+      "alias": "TagGrouper.PropertyEditorUi",
+      "name": "Tag Grouper",
+      "element": "/App_Plugins/TagGrouper/tag-grouper-property-editor.js",
+      "elementName": "tag-grouper-property-editor",
+      "meta": {
+        "label": "Tag Grouper",
+        "description": "Group tags into categories like color, size, etc. Uses tags from descendant nodes.",
+        "icon": "icon-tags",
+        "propertyEditorSchemaAlias": "Umbraco.Plain.Json",
+        "group": "Common"
+         }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "CopyToLanguageVersion",
+  "name": "Copy To Language Version",
+  "version": "2.1.1",
+  "extensions": [
+    {
+      "type": "propertyEditorUi",
+      "alias": "CopyToLanguage.PropertyEditorUi",
+      "name": "Copy To Language Property Editor UI",
+      "element": "/App_Plugins/CopyToLanguageVersion/copy-to-language-editor.element.js",
+      "meta": {
+        "label": "Copy To Language",
+        "propertyEditorSchemaAlias": "Umbraco.Plain.Json",
+        "icon": "icon-code",
+        "group": "Rich Content"
+      }
+    }
+  ]
+}
