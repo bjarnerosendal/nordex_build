@@ -46,17 +46,6 @@ if (-not $nodeVersionOutput) {
 $nodeVersion = $nodeVersionOutput.Trim()
 Write-Info "Detected Node.js version: $nodeVersion"
 
-# If NODE_VERSION environment variable is set, warn if mismatch (non-blocking)
-$expectedNode = $env:NODE_VERSION
-if ($expectedNode) {
-    # Normalize versions by stripping leading 'v'
-    $normExpected = $expectedNode.TrimStart('v')
-    $normDetected = $nodeVersion.TrimStart('v')
-    if ($normDetected -ne $normExpected) {
-        Write-Warn "NODE_VERSION=$expectedNode differs from detected $nodeVersion. Proceeding anyway."
-    }
-}
-
 # Ensure npm is available
 try {
     $npmVersionOutput = & npm --version 2>$null
@@ -69,17 +58,49 @@ if (-not $npmVersionOutput) {
     exit 1
 }
 
-Write-Info "Detected npm version: $($npmVersionOutput.Trim())"
+$npmVersion = $npmVersionOutput.Trim()
+Write-Info "Detected npm version: $npmVersion"
+
+# Parse major versions and skip build on very old runtimes in Cloud (e.g., Node v0.10, npm 1.x)
+function Get-Major($ver) {
+    ($ver.TrimStart('v').Split('.'))[0] -as [int]
+}
+$nodeMajor = Get-Major $nodeVersion
+$npmMajor = Get-Major $npmVersion
+if ($nodeMajor -lt 12 -or $npmMajor -lt 5) {
+    Write-Warn "Detected very old Node/npm in environment (Node=$nodeVersion, npm=$npmVersion). Skipping frontend build to avoid deployment failure."
+    exit 0
+}
+
+# If NODE_VERSION environment variable is set, warn if mismatch (non-blocking)
+$expectedNode = $env:NODE_VERSION
+if ($expectedNode) {
+    # Normalize versions by stripping leading 'v'
+    $normExpected = $expectedNode.TrimStart('v')
+    $normDetected = $nodeVersion.TrimStart('v')
+    if ($normDetected -ne $normExpected) {
+        Write-Warn "NODE_VERSION=$expectedNode differs from detected $nodeVersion. Proceeding anyway."
+    }
+}
 
 Push-Location $frontendPath
 try {
-    # Equivalent to `npm ci` in ./src/frontend
+    # Prefer npm ci when available; fall back to npm install
     Write-Info 'Running npm ci...'
-    & npm ci
+    $ciSucceeded = $true
+    try {
+        & cmd /c "npm ci --no-audit --no-fund --no-progress --loglevel=error"
+    } catch {
+        $ciSucceeded = $false
+    }
+    if (-not $ciSucceeded) {
+        Write-Warn 'npm ci not supported or failed. Falling back to npm install.'
+        & cmd /c "npm install --no-audit --no-fund --no-optional --no-progress --loglevel=error"
+    }
 
-    # Equivalent to `npm run build` in ./src/frontend
+    # Run build
     Write-Info 'Running npm run build...'
-    & npm run build
+    & cmd /c "npm run build --loglevel=error"
 
     Write-Info 'Frontend build completed successfully.'
 }
