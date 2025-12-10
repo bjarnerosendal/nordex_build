@@ -1,0 +1,94 @@
+@using Umbraco.Extensions
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+
+    var headline = content.Value<string>("headline");
+    var trumpet = content.Value<string>("trumpet");
+    var description = content.Value<Umbraco.Cms.Core.Strings.IHtmlEncodedString>("description");
+    var ctaImage = content.Value<Umbraco.Cms.Core.Models.MediaWithCrops>("ctaImage");
+    var ctaImageAltText = ctaImage?.Value<string>("altText") ?? headline ?? "CTA image";
+    var links = content.Value<IEnumerable<Umbraco.Cms.Core.Models.Link>>("link");
+    var reverseLayout = content.Value<bool>("reverseLayout");
+    var textAlign = reverseLayout ? "text-align-end" : "";
+    var backgroundColor = content.Value<string>("backgroundColor") == "Cream" ? "bg-cream-alt" : "bg-brown";
+
+    // Settings
+    var fullWidth = settings?.Value<bool>("fullWidth") ?? false;
+
+    var containerClass = fullWidth ? "container" : "container";
+    var ctaClasses = "cta-block";
+    if (fullWidth) ctaClasses += " cta-full-width";
+    if (reverseLayout) ctaClasses += " cta-reverse";
+    var textColor = backgroundColor == "bg-cream-alt" ? "text-brown" : "text-white";
+    var btnClass = backgroundColor == "bg-cream-alt" ? "btn-brown" : "btn-primary brown-arrow";
+}
+
+<section class="@ctaClasses @backgroundColor">
+    <div class="@containerClass">
+        <div class="cta-wrapper">
+            <div class="cta-content ">
+                <div class="cta-text">
+
+                    @if (!string.IsNullOrEmpty(trumpet))
+                    {
+                        <h3 class="cta-subheading text-uppercase font-size-15 font-weight-lighter @textAlign @textColor">@trumpet</h3>
+                    }
+                    @if (!string.IsNullOrEmpty(headline))
+                    {
+                        <h2 class="cta-headline text-uppercase @textAlign @textColor font-weight-black">@headline</h2>
+                    }
+
+
+
+                    @if (description != null)
+                    {
+                        <div class="cta-description mb-4 @textAlign @textColor">
+                            @Html.Raw(description)
+                        </div>
+                    }
+
+                    @if (links != null && links.Any())
+                    {
+                        <div class="@textAlign cta-actions">
+                            @foreach (var link in links)
+                            {
+                                var linkClass = "btn btn-lg me-3 pe-5 " + btnClass;
+                                var target = !string.IsNullOrEmpty(link.Target) ? $"target=\"{link.Target}\"" : "";
+
+                                @if (link.Type == Umbraco.Cms.Core.Models.LinkType.Content)
+                                {
+                                    <a href="@link.Url" class="@linkClass" @Html.Raw(target)>
+                                        @link.Name
+
+                                    </a>
+                                }
+                                else if (link.Type == Umbraco.Cms.Core.Models.LinkType.External)
+                                {
+                                    <a href="@link.Url" class="@linkClass" @Html.Raw(target) rel="noopener noreferrer">
+                                        @link.Name
+
+                                    </a>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="cta-visual">
+                @if (ctaImage != null)
+                {
+                    <div class="cta-image-container">
+                        <img
+                            src="@ctaImage.GetCropUrl(cropAlias: "cta", useCropDimensions: true, furtherOptions: "&format=webp&quality=100")"
+                            alt="@ctaImageAltText" class="cta-image"/>
+                        <div class="cta-image-overlay"></div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,97 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.Blocks
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var title = content.Value<string>("title") ?? "";
+    var counterItems = content.Value<BlockListModel>("counterItems");
+    
+    var items = new List<object>();
+    
+    if (counterItems != null && counterItems.Any())
+    {
+        foreach (var item in counterItems)
+        {
+            var itemContent = item.Content;
+            var number = itemContent.Value<int>("number");
+            var itemTitle = itemContent.Value<string>("title") ?? "";
+            
+            items.Add(new {
+                number = number,
+                title = itemTitle
+            });
+        }
+    }
+    
+    var jsonData = new {
+        title = title,
+        counterItems = items
+    };
+    
+    var jsonString = System.Text.Json.JsonSerializer.Serialize(jsonData);
+}
+
+<div class="counter-block" data-component="CounterBlock" data-counter-data="@jsonString">
+    @if (!string.IsNullOrEmpty(title))
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-4">
+                    <h2 class="counter-section-title">@title</h2>
+                </div>
+            </div>
+        </div>
+    }
+    
+    @if (items.Any())
+    {
+        <div class="counter-items">
+            <!-- Server-side fallback for SEO and non-JS users -->
+            <div class="container">
+                <div class="row justify-content-center">
+                    @foreach (var item in items)
+                    {
+                        var columnClass = GetColumnClass(items.Count);
+                        <div class="@columnClass mb-4">
+                            <div class="counter-item text-center h-100 d-flex flex-column justify-content-center">
+                                <div class="counter-number-wrapper mb-3">
+                                    <span class="counter-number display-1 fw-bold text-primary">@((int)item.GetType().GetProperty("number").GetValue(item))</span>
+                                </div>
+                                <h4 class="counter-title h5 mb-0">@item.GetType().GetProperty("title").GetValue(item)</h4>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">No counter items configured.</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetColumnClass(int itemCount)
+    {
+        if (itemCount == 1)
+        {
+            return "col-12";
+        }
+        else if (itemCount <= 4)
+        {
+            return "col-lg-3 col-md-6 col-sm-6";
+        }
+        else
+        {
+            return "col-lg-3 col-md-4 col-sm-6";
+        }
+    }
+}

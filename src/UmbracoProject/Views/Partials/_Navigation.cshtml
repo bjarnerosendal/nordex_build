@@ -1,0 +1,197 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Extensions
+@model (Site Root, Settings Settings, string SearchPageUrl)
+
+<header class="navbar position-fixed w-100 top-0 navbar-expand-lg navbar-light bg-light">
+    <div class="container navbar-inner">
+        @{
+            var logoUrl = Model.Settings?.SiteLogo?.Url();
+            var siteName = "NordexFood";
+        }
+        
+        @if (!string.IsNullOrEmpty(logoUrl))
+        {
+            <a class="navbar-brand position-absolute pt-3" href="@Model.Root?.Url()">
+                <img src="@logoUrl" alt="@siteName" class="logo-img" height="124">
+            </a>
+        }
+        else
+        {
+            <a class="navbar-brand" href="@Model.Root?.Url()">@siteName</a>
+        }
+        
+        <div class="ms-auto">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-inner mobile-nav" id="navbarNav">
+            <ul class="navbar-nav  mx-auto">
+                @foreach (var item in (Model.Root?.Children() ?? Enumerable.Empty<IPublishedContent>()).Where(x => x.IsVisible() && x.ContentType.Alias != "settings" && x.ContentType.Alias != "page404"))
+                {
+                    var children = item.Children()?.Where(x => x.IsVisible()) ?? Enumerable.Empty<IPublishedContent>();
+                    var hasChildren = children.Any();
+
+
+                    <li class="nav-item @(hasChildren ? "dropdown" : "")">
+                        @if (hasChildren)
+                        {
+                            <a class="nav-link dropdown-toggle" 
+                               href="@item.Url()" 
+                               id="navbarDropdown@(item.Id)" 
+                               role="button" 
+                               aria-expanded="false" 
+                               aria-haspopup="true"
+                               aria-controls="mega-menu-@(item.Id)"
+                               data-mega-menu="mega-menu-@(item.Id)"
+                               tabindex="0">
+                                @item.Name
+                            </a>
+                            
+                            @* Mobile Navigation Structure - only visible in collapsed navbar *@
+                            <div class="mobile-nav-section d-lg-none" style="display: none;" id="mobile-section-@(item.Id)">
+                                @foreach (var child in children)
+                                {
+                                    var grandChildren = child.Children()?.Where(x => x.IsVisible()).Take(5) ?? Enumerable.Empty<IPublishedContent>();
+                                    var hasGrandChildren = grandChildren.Any();
+                                    
+                                    @if (hasGrandChildren)
+                                    {
+                                        <a class="mobile-level2-item mobile-accordion-toggle" 
+                                           href="@child.Url()" 
+                                           data-mobile-target="mobile-nav-level3-@(child.Id)"
+                                           aria-expanded="false">
+                                            @child.Name
+                                            <span class="mobile-accordion-arrow">▼</span>
+                                        </a>
+                                        
+                                        <ul class="mobile-level3-list mobile-level3-hidden" 
+                                            id="mobile-nav-level3-@(child.Id)">
+                                            @foreach (var grandChild in grandChildren)
+                                            {
+                                                <li>
+                                                    <a class="mobile-level3-item" href="@grandChild.Url()">
+                                                        @grandChild.Name
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <a class="mobile-level2-item" href="@child.Url()">
+                                            @child.Name
+                                        </a>
+                                    }
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="nav-link" href="@item.Url()">@item.Name</a>
+                        }
+                    </li>
+                }
+            </ul>
+            
+            @* Search Icon *@
+            @if (!string.IsNullOrEmpty(Model.SearchPageUrl))
+            {
+                <button class="btn btn-link nav-link p-2 ms-2" id="search-toggle" type="button" aria-label="Search">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            }
+            
+            @* Language Picker *@
+            <div id="language-picker-mount"></div>
+        </div>
+    </div>
+</header>
+
+@* Mega Menu Containers - Outside the navbar structure for full width *@
+@foreach (var item in (Model.Root?.Children() ?? Enumerable.Empty<IPublishedContent>()).Where(x => x.IsVisible() && x.ContentType.Alias != "settings"))
+{
+    var children = item.Children()?.Where(x => x.IsVisible()) ?? Enumerable.Empty<IPublishedContent>();
+    var hasChildren = children.Any();
+    var megamenuImages = item?.Value<IEnumerable<Umbraco.Cms.Core.Models.MediaWithCrops>>("megaMenuImages");
+    var hasMegaMenuImages = megamenuImages?.Any() ?? false;
+    
+    @if (hasChildren)
+    {
+        <div class="mega-menu-container" 
+             id="mega-menu-@(item.Id)"
+             role="menu"
+             aria-labelledby="navbarDropdown@(item.Id)"
+             aria-hidden="true">
+            <div class="ps-8 ms-4 me-3">
+                <div class="row">
+                <div class="mega-menu-row mt-7 @(hasMegaMenuImages ? "col-8" : "col-12") ">
+                    <div class="container">
+                        <div class="row">
+                    @* Level 2 & 3 Items in Grid *@
+                    @foreach (var child in children)
+                    {
+                        var grandChildren = child.Children()?.Where(x => x.IsVisible())?.Take(5) ?? Enumerable.Empty<IPublishedContent>();
+                        var hasGrandChildren = grandChildren.Any();
+                        
+                        <div class="mega-menu-column @(hasMegaMenuImages ? "col-3" : "col-2")  mb-4">
+                            @* Level 2 Item *@
+                            <div class="mega-menu-section">
+                                <a class="dropdown-item mega-menu-level2 font-weight-black text-uppercase" href="@child.Url()" role="menuitem">
+                                    @child.Name
+                                </a>
+                                
+                                @* Level 3 Items *@
+                                @if (hasGrandChildren)
+                                {
+                                    <ul class="mega-menu-level3" role="none">
+                                        @foreach (var grandChild in grandChildren)
+                                        {
+                                            <li role="none">
+                                                <a class="dropdown-item mega-menu-level3-item" href="@grandChild.Url()" role="menuitem">
+                                                    @grandChild.Name
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        </div>
+                    }
+                    </div>
+                    </div>
+                </div>
+                @if (hasMegaMenuImages)
+                {
+                    <div class="col-4 mt-5 mega-menu-images mb-7">
+                        <div class="row">
+                        @foreach (var image in megamenuImages)
+                        {
+                            var caption = image?.Value<string>("caption");
+                                <div class="col-6">
+                                    <div class="mega-menu-image-bg position-relative rounded-edges" style="background-image: url('@image.Url()'); ">
+                                        <div class="mega-menu-image-overlay position-absolute top-0 start-0 w-100 h-100 rounded-edges"></div>
+                                        <div class="mega-menu-image-content position-absolute start-0 bottom-0 text-white text-left w-100 px-2">
+
+                                            @if (!string.IsNullOrEmpty(caption))
+                                            {
+                                                <div class="image-caption mb-3 ms-2 me-4 text-uppercase font-weight-black ">@caption</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                 
+                        }
+                    </div></div>
+
+                }
+            </div>    
+            
+        </div>
+    </div>
+    }
+}

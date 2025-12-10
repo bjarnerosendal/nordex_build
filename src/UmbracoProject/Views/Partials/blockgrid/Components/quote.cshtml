@@ -1,0 +1,84 @@
+@using Umbraco.Extensions
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    
+    var image = content.Value<Umbraco.Cms.Core.Models.MediaWithCrops>("image");
+    var author = content.Value<string>("author");
+    var quoteText = content.Value<string>("quoteText");
+    var backgroundColor = content.Value<string>("backgroundColor");
+    
+    // Map background color values to CSS classes
+    var bgClass = backgroundColor switch
+    {
+        "Cream" => "bg-cream",
+        "Light Brown" => "bg-cream-alt",
+        "Light Blue" => "bg-light-blue",
+        _ => "bg-cream" // Default fallback
+    };
+
+    // Map background color values to CSS classes
+    var textClass = backgroundColor switch
+    {
+        "Cream" => "text-cream",
+        "Light Brown" => "text-cream-alt",
+        "Light Blue" => "text-light-blue",
+        _ => "text-cream" // Default fallback
+    };
+    
+
+    
+    var quoteClasses = "quote-block";
+}
+
+<section class="@quoteClasses my-4">
+    <div class="container ">
+        <div class="@bgClass rounded-edges  pt-8 pb-6">
+            <div class="quote-wrapper pt-8">
+                <div class="row align-items-center">
+                    
+                    @if (image != null)
+                    {
+                        <div class="col-lg-3 col-md-4">
+                            <div class="quote-image-container @textClass position-relative">
+                            
+                                <img src="@image.GetCropUrl(cropAlias: "square", useCropDimensions: true, furtherOptions: "&format=webp&quality=90")" 
+                                    alt="@(author ?? "Quote author")" 
+                                    class="quote-image img-fluid rounded-circle" />
+                                    <div class="gradient-overlay-left-right-transparent-currentcolor h-100"></div>
+                            </div>
+                        </div>
+                    }
+                    
+                    <div class="@(image != null ? "col-lg-9 col-md-8" : "col-12")">
+                        <div class="quote-content">
+                            
+                            @if (!string.IsNullOrEmpty(quoteText))
+                            {
+                                <blockquote class="quote-text mb-0">
+                                    <div class="quote-mark-open">&ldquo;</div>
+                                    <div class="quote-body text-brown font-size-30 font-weight-lighter">
+                                        @Html.Raw(quoteText.Replace("\n", "<br>"))
+                                    </div>
+                                
+                                </blockquote>
+                            }
+                            
+                            @if (!string.IsNullOrEmpty(author))
+                            {
+                                <cite class="mt-4 pt-2 quote-author text-brown text-uppercase font-size-14 font-weight-black">
+                            
+                                    @author
+                                </cite>
+                            }
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

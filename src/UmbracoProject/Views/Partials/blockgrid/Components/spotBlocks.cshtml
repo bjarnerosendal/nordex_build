@@ -1,0 +1,62 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@using Umbraco.Cms.Web.Common.PublishedModels
+@using System.Text.Json
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+@{
+    var spotBlocks = (Model.Content as SpotBlocks)?.Blocks;
+    
+    // Transform spot blocks data for Vue component
+    object spotBlocksData;
+    
+    if (spotBlocks != null)
+    {
+        spotBlocksData = spotBlocks.Select((spotBlock, index) => {
+            var spotBlockVm = spotBlock.Content as SpotBlock;
+            var bgColor = spotBlockVm?.BackgroundColor?.Replace(" ", "-");
+            var background = string.IsNullOrWhiteSpace(spotBlockVm?.BackgroundColor) ? "bg-green" : "bg-" + bgColor?.ToLower();
+            var textColor = background.Contains("grey") ? "text-white" : "text-brown";
+            var altText = spotBlockVm?.Image?.Value<string>("altText") ?? "";
+            
+            return new {
+                id = spotBlockVm?.Key.ToString() ?? index.ToString(),
+                image = !string.IsNullOrEmpty(spotBlockVm?.Image?.Url()) 
+                    ? spotBlockVm.Image.GetCropUrl(cropAlias: "spotImage", useCropDimensions: true, furtherOptions: "&format=webp")
+                    : "",
+                imageAlt = altText,
+                trumpet = spotBlockVm?.Trumpet ?? "",
+                headline = spotBlockVm?.Headline ?? "",
+                teaser = spotBlockVm?.Teaser ?? "",
+                link = spotBlockVm?.Link != null ? new {
+                    url = spotBlockVm.Link.Url,
+                    name = spotBlockVm.Link.Name,
+                    target = spotBlockVm.Link.Target
+                } : null,
+                backgroundColor = background,
+                textColor = textColor
+            };
+        }).ToList();
+    }
+    else
+    {
+        spotBlocksData = new List<object>();
+    }
+
+    var jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = false
+    };
+
+    var jsonData = JsonSerializer.Serialize(new { spotBlocks = spotBlocksData }, jsonOptions);
+}
+
+<div class="spotBlocks-component" 
+     data-component="SpotBlocksCarousel" 
+     data-spot-blocks='@Html.Raw(jsonData)'>
+    <!-- Vue component will be mounted here -->
+    <div class="loading-placeholder">
+        <p>Loading spot blocks...</p>
+    </div>
+</div>

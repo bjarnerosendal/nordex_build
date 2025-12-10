@@ -1,0 +1,41 @@
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+@using System.Text.Json
+@{
+    var title = Model.Content.Value<string>("title") ?? "";
+    var carouselTitle = Model.Content.Value<string>("carouselTitle") ?? "";
+    var listItem = Model.Content.Value<IPublishedContent>("listItem");
+    var itemCount = Model.Content.Value<int>("itemCount", fallback: Fallback.ToDefaultValue);
+    var tags = Model.Content.Value<string[]>("tags") ?? Array.Empty<string>();
+
+    // Build the API URL safely in one line
+    var tagQuery = string.Join(" or ", tags.Select(t => $"\"{t}\""));
+    var lang = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    var apiUrl = "/api/contentsearch" + (string.IsNullOrWhiteSpace(tagQuery) ? "?" : $"?tagGroups=({tagQuery})&") + $"skip=0&take={itemCount}&lang={lang}&StartNodeId={listItem?.Id ?? 0}";
+    var carouselData = new
+    {
+        title = title,
+        carouselTitle = carouselTitle,
+        listItemId = listItem?.Key.ToString() ?? "",
+        itemCount = itemCount > 0 ? itemCount : 10,
+        tags = tags,
+        apiUrl = apiUrl
+    };
+
+    var jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = false
+    };
+
+    var jsonData = JsonSerializer.Serialize(carouselData, jsonOptions);
+}
+
+<div class="article-carousel-component" 
+     data-component="ArticleCarousel" 
+     data-article-carousel='@Html.Raw(jsonData)'>
+    <!-- Vue component will be mounted here -->
+    <div class="loading-placeholder">
+        <h2>@title</h2>
+        <p>Loading articles...</p>
+    </div>
+</div>

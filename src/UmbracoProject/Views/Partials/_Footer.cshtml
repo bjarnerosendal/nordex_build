@@ -1,0 +1,40 @@
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Extensions
+@model Settings
+
+@{
+    var siteName = "NordexFood";
+    var currentYear = DateTime.Now.Year;
+    
+    // Get footer components
+    var footerComponents = Model?.Components;
+    
+    // Get site logo for footer branding
+    var logoUrl = Model?.SiteLogo?.Url();
+}
+
+<footer class="site-footer bg-dark-brown text-light pb-5 pt-4 mt-1">
+    <div class="container">
+        @* Footer Components Section *@
+        @if (footerComponents != null && footerComponents.Any())
+        {
+            <div class="footer-components">
+                <div class="row">
+                    <div class="col-12">
+                        @Html.GetBlockGridHtml(footerComponents)
+                    </div>
+                </div>
+            </div>
+        }
+       
+      
+    </div>
+    
+</footer>
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-end pt-3 pb-4 mb-7 text-brown opacity-40">
+            <small>&copy; @currentYear @siteName</small>
+        </div>
+    </div>
+</div>

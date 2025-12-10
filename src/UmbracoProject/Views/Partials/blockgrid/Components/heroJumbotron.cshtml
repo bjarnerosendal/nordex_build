@@ -1,0 +1,48 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Web.Common.PublishedModels
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    
+    // Get the hero jumbotron properties - using the generic Value method since model might not be generated yet
+    var title = content.Value<string>("title") ?? "Welcome to NordexFood";
+    var description = content.Value<string>("description") ?? "";
+    var buttonLinks = content.Value<IEnumerable<Umbraco.Cms.Core.Models.Link>>("buttonLink");
+    
+    var sectionClasses = "hero-jumbotron-block mb-5";
+}
+
+<section class="@sectionClasses">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container py-5">
+            @if (!string.IsNullOrEmpty(title))
+            {
+                <h1 class="display-5 fw-bold">@title</h1>
+            }
+            
+            @if (!string.IsNullOrEmpty(description))
+            {
+                <p class="col-md-8 fs-4">@description</p>
+            }
+            
+            @if (buttonLinks != null && buttonLinks.Any())
+            {
+                @foreach (var link in buttonLinks)
+                {
+                    <a href="@link.Url" class="btn btn-primary btn-lg me-2" 
+                       @(link.Target == "_blank" ? "target=\"_blank\"" : "")>
+                        @(!string.IsNullOrEmpty(link.Name) ? link.Name : "Learn more")
+                    </a>
+                }
+            }
+            else
+            {
+                <button class="btn btn-primary btn-lg" type="button">Learn more</button>
+            }
+        </div>
+    </div>
+</section>

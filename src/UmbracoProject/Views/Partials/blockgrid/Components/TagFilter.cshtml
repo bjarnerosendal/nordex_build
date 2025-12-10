@@ -1,0 +1,137 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Models.Blocks
+@using System.Text.Json
+@using System.Web
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<BlockGridItem>
+
+@{
+    var content = Model.Content;
+    var title = content.Value<string>("title") ?? "Filter by Tags";
+    var addTextSearch = content.Value<bool>("addTextSearch");
+    var cardType = content.HasProperty("defaultCardType") ? content.Value<string>("defaultCardType") : "content";
+    var hideFilter = content.HasProperty("hideFilter") ? content.Value<bool>("hideFilter") : false;
+    var visibleItems = content.HasProperty("visibleItems") ? content.Value<string>("visibleItems") : "0";
+    // add new value with current pages id
+    var currentPageId = Umbraco.AssignedContentItem?.Id;
+    // Get grouped tags from the TagGrouper property
+    var tagGroupsJson = "[]";
+    var tagGroupsValue = new object();
+    var globalSearch = false;
+    if (content.HasProperty("groups"))
+    {
+        tagGroupsValue = content.Value("groups");
+
+        if (tagGroupsValue != null)
+        {
+            // If value is a JsonDocument, extract the 'groups' property
+            if (tagGroupsValue is JsonDocument jsonDoc)
+            {
+                if (jsonDoc.RootElement.TryGetProperty("groups", out var groupsElement))
+                {
+                    tagGroupsJson = groupsElement.GetRawText();
+                }
+                else
+                {
+                    // Fallback: serialize the whole value
+                    tagGroupsJson = JsonSerializer.Serialize(jsonDoc, new JsonSerializerOptions { WriteIndented = false });
+                }
+                globalSearch = jsonDoc.RootElement.TryGetProperty("global", out var globalSearchElement) && globalSearchElement.GetBoolean();
+            }
+            else if (tagGroupsValue is string stringValue)
+            {
+                // Try to parse string as JSON and extract 'groups'
+                try
+                {
+                    using var doc = JsonDocument.Parse(stringValue);
+                    if (doc.RootElement.TryGetProperty("groups", out var groupsElement))
+                    {
+                        tagGroupsJson = groupsElement.GetRawText();
+                    }
+                    else
+                    {
+                        tagGroupsJson = stringValue;
+                    }
+                    globalSearch = doc.RootElement.TryGetProperty("global", out var globalSearchElement) && globalSearchElement.GetBoolean();
+                }
+                catch
+                {
+                    tagGroupsJson = stringValue;
+                }
+            }
+            else if (tagGroupsValue is IEnumerable<object> enumerable)
+            {
+                // If it's already an array, just serialize it
+                tagGroupsJson = JsonSerializer.Serialize(tagGroupsValue, new JsonSerializerOptions { WriteIndented = false });
+            }
+            else
+            {
+                // Fallback: try to serialize the 'groups' property if present
+                var groupsProp = tagGroupsValue.GetType().GetProperty("groups");
+                if (groupsProp != null)
+                {
+                    var groupsVal = groupsProp.GetValue(tagGroupsValue);
+                    tagGroupsJson = JsonSerializer.Serialize(groupsVal, new JsonSerializerOptions { WriteIndented = false });
+                }
+                else
+                {
+                    tagGroupsJson = JsonSerializer.Serialize(tagGroupsValue, new JsonSerializerOptions { WriteIndented = false });
+                }
+            }
+        }
+    }
+    
+    // Check if there's a specific node ID for filtering (could be added as a property to the TagFilter element type)
+    var filterNodeId = content.HasProperty("startNode") ? content.Value<IPublishedContent>("startNode")?.Id.ToString() : null;
+
+    // Option to use current page as filter starting point (could be added as a property)
+    var useCurrentPage = content.HasProperty("useCurrentPage") ? content.Value<bool>("useCurrentPage") : false;
+    
+    // If using current page, get the current page ID from Umbraco context
+    if (useCurrentPage && string.IsNullOrEmpty(filterNodeId))
+    {
+        var currentPage = Umbraco.AssignedContentItem;
+        filterNodeId = currentPage?.Id.ToString();
+    }
+    
+    // Get current culture/language for API requests
+    var currentCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var uiCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    
+    // Use the more specific culture if available, fallback to UI culture
+    var language = !string.IsNullOrEmpty(currentCulture) ? currentCulture : uiCulture;
+
+    
+    // Determine which node ID to use - filterNodeId takes precedence over currentPageId
+    var finalNodeId = !string.IsNullOrEmpty(filterNodeId) ? filterNodeId : currentPageId?.ToString();
+    if (!string.IsNullOrEmpty(filterNodeId))
+    {
+        // Additional logic for when finalNodeId is set
+        globalSearch = false; // Disable global search if a specific node is set
+    }
+    var selectAllFilters = content.HasProperty("selectAllFilters") ? content.Value<bool>("selectAllFilters") : false;
+}
+<section class="container">
+    <div class="tag-filter-component" 
+        data-component="tag-filter" 
+        data-title="@title" 
+        data-add-text-search="@addTextSearch.ToString().ToLower()"
+        data-card-type="@cardType"
+        data-hide-filter="@hideFilter.ToString().ToLower()"
+        data-tag-groups="@HttpUtility.HtmlAttributeEncode(tagGroupsJson)"
+        data-global-search="@globalSearch.ToString().ToLower()"
+        data-language="@language"
+        data-visible-items="@visibleItems"
+        data-select-all="@selectAllFilters.ToString().ToLower()"
+        data-exclude-node="@(filterNodeId != null ? filterNodeId : currentPageId?.ToString())"
+        @(string.IsNullOrEmpty(finalNodeId) ? "" : $"data-node-id=\"{finalNodeId}\"")>
+        @if (!string.IsNullOrEmpty(title))
+        {
+            <h3 class="tag-filter-title">@title</h3>
+        }
+        
+        <!-- Vue component will be mounted here -->
+        <div id="grouped-tag-selector-@Guid.NewGuid().ToString("N")[..8]" class="grouped-tag-selector-container"></div>
+    
+    </div>
+</section>

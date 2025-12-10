@@ -1,0 +1,85 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    
+    var items = content.Value<IEnumerable<Umbraco.Cms.Core.Models.Blocks.BlockListItem>>("items");
+    
+    // Settings (if available in the future)
+    var customCssClass = settings?.Value<string>("customCssClass") ?? "";
+    var backgroundColor = settings?.Value<string>("backgroundColor");
+    
+    var sectionClasses = "container accordion-block my-5";
+    if (!string.IsNullOrEmpty(customCssClass))
+    {
+        sectionClasses += $" {customCssClass}";
+    }
+    
+    var sectionStyles = "";
+    if (!string.IsNullOrEmpty(backgroundColor))
+    {
+        sectionStyles = $"background-color: {backgroundColor};";
+    }
+}
+
+<section class="@sectionClasses" style="@sectionStyles">
+   
+        <div class="row justify-content-center">
+  
+                @if (items != null && items.Any())
+                {
+                    <div class="nordex-accordion">
+                        @foreach (var item in items)
+                        {
+                            var itemContent = item.Content;
+                            var itemSettings = item.Settings;
+                            
+                            var title = itemContent.Value<string>("headline");
+                            var contentRTE = itemContent.Value<IHtmlEncodedString>("text");
+                            var icon = itemContent.Value<IPublishedContent>("icon");
+                            var isOpenByDefault = itemContent.Value<bool>("isOpenByDefault");
+                            var isDisabled = itemContent.Value<bool>("isDisabled");
+                            var cssClass = itemContent.Value<string>("cssClass") ?? "";
+                            
+                            var itemClasses = "accordion-item";
+                            if (!string.IsNullOrEmpty(cssClass))
+                            {
+                                itemClasses += $" {cssClass}";
+                            }
+                            if (isDisabled)
+                            {
+                                itemClasses += " accordion-item-disabled";
+                            }
+                            
+                            <details class="@itemClasses" @(isOpenByDefault ? "open" : "")>
+                                <summary class="accordion-summary">
+                                    @if (icon != null)
+                                    {
+                                        <img src="@icon.Url()" alt="" class="accordion-icon me-2" width="20" height="20">
+                                    }
+                                    <span class="accordion-title">@title</span>
+                                    <span class="accordion-arrow">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                </summary>
+                                <div class="accordion-content">
+                                    @if (contentRTE != null)
+                                    {
+                                        @Html.Raw(contentRTE)
+                                    }
+                                </div>
+                            </details>
+                        }
+                    </div>
+                }
+          
+   
+        </div>
+  
+</section>

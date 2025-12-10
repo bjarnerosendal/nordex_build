@@ -1,0 +1,25 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;  
+@using Umbraco.Extensions;  
+
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Site>  
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;  
+@{  
+    Layout = "layout.cshtml";  
+}  
+
+@* Main content area - this will be replaced by Vue.js in the browser *@  
+<div class="site-content">  
+    @* Server-side fallback content for SEO and non-JS users *@  
+
+
+        @* Render components if available *@  
+        @if (Model.MainComponents != null && Model.MainComponents.Any())  
+        {  
+            <section class="components-section">  
+                @Html.GetBlockGridHtml(Model.MainComponents)  
+            </section>  
+        }  
+
+        @* Child pages navigation *@  
+
+</div>

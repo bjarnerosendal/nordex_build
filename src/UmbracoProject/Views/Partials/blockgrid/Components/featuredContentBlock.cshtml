@@ -1,0 +1,68 @@
+@using Umbraco.Extensions
+@using System.Text.Json
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var title = Model.Content.Value("title")?.ToString() ?? "";
+    var featuredItems = Model.Content.Value("featuredItems");
+    
+    var items = new List<object>();
+    
+    if (featuredItems != null)
+    {
+        // Process block list data
+        var featuredItemsList = (Umbraco.Cms.Core.Models.Blocks.BlockListModel)featuredItems;
+        
+        foreach (var item in featuredItemsList)
+        {
+            var content = item.Content;
+            var itemTitle = content.Value("title")?.ToString() ?? "";
+            var description = content.Value("description")?.ToString() ?? "";
+            var links = content.Value("link");
+            
+            object? linkData = null;
+            
+            if (links != null)
+            {
+                try 
+                {
+                    // Handle Multi URL Picker data
+                    var linkList = (List<Umbraco.Cms.Core.Models.Link>)links;
+                    if (linkList?.Any() == true)
+                    {
+                        var firstLink = linkList.First();
+                        linkData = new {
+                            url = firstLink.Url,
+                            name = firstLink.Name,
+                            target = firstLink.Target
+                        };
+                    }
+                }
+                catch 
+                {
+                    // Fallback if parsing fails
+                }
+            }
+            
+            var itemData = new {
+                title = itemTitle,
+                description = description,
+                link = linkData
+            };
+            
+            items.Add(itemData);
+        }
+    }
+    
+    var componentData = new {
+        title = title,
+        items = items
+    };
+    
+    var jsonData = JsonSerializer.Serialize(componentData, new JsonSerializerOptions 
+    { 
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase 
+    });
+}
+
+<div class="featured-content-component py-5" data-component="featured-content" data-props="@jsonData"></div>

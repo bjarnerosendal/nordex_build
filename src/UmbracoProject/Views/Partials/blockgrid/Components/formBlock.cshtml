@@ -1,0 +1,18 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem<Umbraco.Cms.Web.Common.PublishedModels.FormBlock, Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement>>
+@using Microsoft.AspNetCore.Antiforgery;
+@using JsonSerializer = System.Text.Json.JsonSerializer
+@inject IAntiforgery antiforgery
+
+@if (Model != null && Model.Content!= null && Model.Content?.Form != null)
+{
+    var tokenSet = antiforgery.GetAndStoreTokens(Context);
+    var dataModel = new FormViewModel();
+    dataModel.HeaderName = tokenSet?.HeaderName;
+    dataModel.RequestToken = tokenSet?.RequestToken;
+    var currentContent =  Umbraco.Content(UmbracoContext?.PublishedRequest?.PublishedContent?.Id);
+    dataModel.ContentKey = currentContent?.Key.ToString();
+    dataModel.FormKey = Model.Content.Form.ToString();
+    var formModelJson = JsonSerializer.Serialize(dataModel);
+
+    <div class="js-popup-forms" data-vue-component="Form" data-model="@formModelJson"></div>
+}

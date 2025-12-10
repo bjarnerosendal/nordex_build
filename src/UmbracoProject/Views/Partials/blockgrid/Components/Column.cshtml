@@ -1,0 +1,57 @@
+@using Umbraco.Extensions
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    
+    // Get all areas for the one columns
+    var areas = Model.Areas;
+    
+    // Settings (if available in the future)
+    var customCssClass = settings?.Value<string>("customCssClass") ?? "";
+    var backgroundColor = settings?.Value<string>("backgroundColor");
+    var spacing = settings?.Value<string>("spacing") ?? "normal";
+    
+    var sectionClasses = "one-columns-block py-4";
+    if (!string.IsNullOrEmpty(customCssClass))
+    {
+        sectionClasses += $" {customCssClass}";
+    }
+    
+    var spacingClass = spacing switch
+    {
+        "large" => "py-5",
+        "small" => "py-2",
+        _ => "py-4"
+    };
+    
+    var sectionStyles = "";
+    if (!string.IsNullOrEmpty(backgroundColor))
+    {
+        sectionStyles = $"background-color: {backgroundColor};";
+    }
+    
+    // Get specific areas by alias
+    var area1 = areas?.FirstOrDefault(a => a.Alias == "area");
+
+
+}
+
+<section class="@sectionClasses @spacingClass" style="@sectionStyles">
+    <div class="container">
+        <div class="row g-12">
+            @* Column 1 *@
+            <div class="col-lg-12 col-md-12">
+                <div class="one-columns-item">
+                    @if (area1 != null && area1.Any())
+                    {
+                        @Html.GetBlockGridItemAreaHtml(area1)
+                    }
+                 
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>

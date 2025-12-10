@@ -1,0 +1,68 @@
+@using Umbraco.Extensions
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content as TextAndLinks;
+    var headline = content.Headline;
+    var text = content.Text;
+    var links = content.Links;
+    
+   
+    var sectionClasses = "text-and-links-block pt-4";
+
+    
+    var sectionStyles = "";
+}
+
+<section class="@sectionClasses" style="@sectionStyles">
+   
+        <div class="row justify-content-center">
+            
+                <div class="text-and-links-content">
+                    @if (!string.IsNullOrEmpty(headline))
+                    {
+                        <h2 class="text-and-links-headline font-size-14 mb-4 font-weight-bold text-uppercase">@headline</h2>
+                    }
+                    
+                    @if (text != null)
+                    {
+                        <div class="text-and-links-text text-white mb-4 pb-1 font-size-14">
+                            @Html.Raw(text)
+                        </div>
+                    }
+                    
+                    @if (links != null && links.Any())
+                    {
+                        <div class="text-and-links-buttons">
+                            @foreach (var link in links)
+                            {
+                                var linkClass = "d-block text-white font-size-14 chevron-before";
+                                var target = !string.IsNullOrEmpty(link.Target) ? $"target=\"{link.Target}\"" : "";
+                                
+                                @if (link.Type == Umbraco.Cms.Core.Models.LinkType.Content)
+                                {
+                                    <a href="@link.Url" class="@linkClass" @Html.Raw(target)>
+                                        @link.Name
+                                    </a>
+                                }
+                                else if (link.Type == Umbraco.Cms.Core.Models.LinkType.External)
+                                {
+                                    <a href="@link.Url" class="@linkClass" @Html.Raw(target) rel="noopener noreferrer">
+                                        @link.Name
+                                    </a>
+                                }
+                        
+                                else if (link.Type == Umbraco.Cms.Core.Models.LinkType.Media)
+                                {
+                                    <a href="@link.Url" class="@linkClass" @Html.Raw(target) download>
+                                        @link.Name
+                                    </a>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            
+        </div>
+ 
+</section>

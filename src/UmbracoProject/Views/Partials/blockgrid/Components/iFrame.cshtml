@@ -1,0 +1,33 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    
+    // Get the iframe properties
+    var iFrameUrl = content.Value<string>("url");
+    var iFrameHeight = content.Value<int?>("height") ?? 600;
+    
+    var sectionClasses = "container m-5";
+}
+
+<section class="@sectionClasses">
+
+        <div class="d-flex justify-content-center">
+
+                @if (iFrameUrl != null && !iFrameUrl.IsNullOrWhiteSpace())
+                {
+                    <iframe src="@iFrameUrl" 
+                            height="@iFrameHeight"
+                            class="iframe-content"
+                            loading="lazy"
+                            allowfullscreen>
+                    </iframe>
+                }
+                
+            </div>
+
+</section>

@@ -1,0 +1,28 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels
+@using Umbraco.Extensions
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
+@model ContentModels.Page404
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Page404>
+ 
+@{  
+    Layout = "layout.cshtml";  
+    var contentPageVm = Model;
+}  
+
+@* Content Page Hero Section *@
+<partial name="_ContentPageHero" model="Model" />
+
+@* Breadcrumb Navigation *@
+<partial name="_Breadcrumb" model="Model" />
+
+@* Main content area - this will be replaced by Vue.js in the browser *@  
+<div class="content-page overflow-x-hidden">  
+        
+        @if (Model.Grid != null && Model.Grid.Any())  
+        {  
+            <section class="components-section">  
+                @Html.GetBlockGridHtml(Model.Grid)  
+            </section>  
+        }  
+
+</div>

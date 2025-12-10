@@ -1,0 +1,68 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Models.Blocks
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<BlockListItem>
+
+@{
+    var content = Model.Content;
+    var title = content.Value<string>("title") ?? "Filter by Tags";
+    var showAllOption = content.Value<bool>("showAllOption");
+    var cardType = content.HasProperty("defaultCardType") ? content.Value<string>("defaultCardType") : "content";
+    var hideFilter = content.HasProperty("hideFilter") ? content.Value<bool>("hideFilter") : false;
+    var visibleItems = content.HasProperty("visibleItems") ? content.Value<int>("visibleItems") : 10;
+    
+    // Check if there's a specific node ID for filtering (could be added as a property to the TagFilter element type)
+    var filterNodeId = content.HasProperty("filterNodeId") ? content.Value<string>("filterNodeId") : null;
+    
+    // Option to use current page as filter starting point (could be added as a property)
+    var useCurrentPage = content.HasProperty("useCurrentPage") ? content.Value<bool>("useCurrentPage") : false;
+    
+    // If using current page, get the current page ID from Umbraco context
+    if (useCurrentPage && string.IsNullOrEmpty(filterNodeId))
+    {
+        var currentPage = Umbraco.AssignedContentItem;
+        filterNodeId = currentPage?.Key.ToString();
+    }
+    
+    // Get all unique tags from published content with the taxonomy composition
+    var allContent = Umbraco.ContentAtRoot()
+        .SelectMany(x => x.DescendantsOrSelf())
+        .Where(x => x.HasProperty("tags"));
+        
+    var allTags = allContent
+        .SelectMany(x => x.Value<string[]>("tags") ?? new string[0])
+        .Where(tag => !string.IsNullOrEmpty(tag))
+        .Distinct()
+        .OrderBy(tag => tag)
+        .ToList();
+}
+
+<div class="tag-filter-component" 
+     data-component="tag-filter" 
+     data-title="@title" 
+     data-show-all="@showAllOption.ToString().ToLower()"
+     data-card-type="@cardType"
+     data-hide-filter="@hideFilter.ToString().ToLower()"
+     data-visible-items="@visibleItems"
+     @(string.IsNullOrEmpty(filterNodeId) ? "" : $"data-node-id=\"{filterNodeId}\"")>
+    @if (!string.IsNullOrEmpty(title))
+    {
+        <h3 class="tag-filter-title">@title</h3>
+    }
+    
+    <div class="tag-filter-list">
+        @if (showAllOption)
+        {
+            <button type="button" class="tag-filter-item active" data-tag="">
+                All
+            </button>
+        }
+        
+        @foreach (var tag in allTags)
+        {
+            <button type="button" class="tag-filter-item" data-tag="@tag">
+                @tag
+            </button>
+        }
+    </div>
+</div>

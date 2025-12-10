@@ -1,0 +1,109 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@using Umbraco.Cms.Core.Models
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    
+    // Get the hero carousel items
+    var heroItems = content.Value<IEnumerable<Umbraco.Cms.Core.Models.Blocks.BlockListItem>>("heroItems");
+    
+    // Settings (if available in the future)
+    var fullWidth = settings?.Value<bool>("fullWidth") ?? false;
+    
+    var containerClass = fullWidth ? "container-fluid g-0" : "container";
+    var sectionClasses = "hero-carousel-block";
+    if (fullWidth) sectionClasses += " hero-full-width";
+    
+    // Prepare hero items data for JSON serialization
+    var heroItemsData = heroItems?.Select(item => {
+        var heroImage = item.Content.Value<MediaWithCrops>("heroImage");
+        return new {
+            headline = item.Content.Value<string>("headline") ?? "",
+            subheading = item.Content.Value<string>("subheading") ?? "",
+            description = item.Content.Value<IHtmlEncodedString>("description")?.ToString() ?? "",
+            heroImage = heroImage != null ? new {
+                url = heroImage.GetCropUrl(cropAlias: "hero", useCropDimensions: true,  furtherOptions: "&format=webp") ?? "",
+                alt = heroImage.Value<string>("alt") ?? item.Content.Value<string>("headline") ?? ""
+            } : null,
+            link = item.Content.Value<IEnumerable<Umbraco.Cms.Core.Models.Link>>("link")?.Select(link => new {
+                url = link.Url ?? "",
+                name = link.Name ?? "",
+                target = link.Target ?? ""
+            })?.ToArray()
+        };
+    })?.ToList();
+    
+    var heroItemsJson = heroItemsData != null ? System.Text.Json.JsonSerializer.Serialize(heroItemsData) : "[]";
+}
+
+<section class="@sectionClasses @containerClass mb-4">
+    @if (heroItems != null && heroItems.Any())
+    {
+        <div class="hero-carousel-wrapper" data-vue-component="HeroCarousel" data-hero-items="@heroItemsJson">>
+            
+            <!-- Fallback for non-Vue environments -->
+            <div class="hero-slides-fallback">
+                @foreach (var item in heroItems.Take(1)) // Show only first item as fallback
+                {
+                    var headline = item.Content.Value<string>("headline");
+                    var subheading = item.Content.Value<string>("subheading");
+                    var description = item.Content.Value<IHtmlEncodedString>("description");
+                    var heroImage = item.Content.Value<MediaWithCrops>("heroImage");
+                    var links = item.Content.Value<IEnumerable<Umbraco.Cms.Core.Models.Link>>("link");
+
+                    
+                    var backgroundStyle = heroImage != null ? 
+                        $"background-image: url({heroImage?.GetCropUrl(cropAlias: "hero", useCropDimensions: true, furtherOptions: "&format=webp")}); background-size: cover; background-position: center;" : 
+                        "background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);";
+                    
+                    <div class="hero-slide-fallback" style="@backgroundStyle">
+                        <div class="hero-slide-overlay"></div>
+                        <div class="hero-slide-content">
+                            <div class="@containerClass">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-8 mx-auto text-center">
+                                        @if (!string.IsNullOrEmpty(headline))
+                                        {
+                                            <h1 class="hero-headline display-3 fw-bold mb-4">@headline</h1>
+                                        }
+                                        
+                                        @if (!string.IsNullOrEmpty(subheading))
+                                        {
+                                            <h2 class="hero-subheading h4 mb-4 text-muted">@subheading</h2>
+                                        }
+                                        
+                                        @if (description != null)
+                                        {
+                                            <div class="hero-description lead mb-4">
+                                                @Html.Raw(description)
+                                            </div>
+                                        }
+                                        
+                                        @if (links != null && links.Any())
+                                        {
+                                            <div class="hero-actions">
+                                                @foreach (var link in links)
+                                                {
+                                                    <a href="@link.Url" 
+                                                       @(link.Target == "_blank" ? "target=\"_blank\"" : "")
+                                                       class="btn btn-primary btn-lg me-3">
+                                                        @(!string.IsNullOrEmpty(link.Name) ? link.Name : "")
+                                                    </a>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+  
+</section>

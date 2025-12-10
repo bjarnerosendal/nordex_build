@@ -1,0 +1,21 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    
+    // Get raw html string content
+    var htmlString = content.Value<string>("htmlString");
+
+}
+
+
+@if (htmlString != null && !htmlString.IsNullOrWhiteSpace())
+{
+    <div class="container py-5">
+        @Html.Raw(htmlString)
+    </div>
+}
+                

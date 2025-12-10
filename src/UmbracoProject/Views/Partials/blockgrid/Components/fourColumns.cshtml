@@ -1,0 +1,91 @@
+@using Umbraco.Extensions
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    
+    // Get all areas for the four columns
+    var areas = Model.Areas;
+    
+    // Settings (if available in the future)
+    var customCssClass = settings?.Value<string>("customCssClass") ?? "";
+    var backgroundColor = settings?.Value<string>("backgroundColor");
+    var spacing = settings?.Value<string>("spacing") ?? "normal";
+    
+    var sectionClasses = "four-columns-block pt-4";
+    if (!string.IsNullOrEmpty(customCssClass))
+    {
+        sectionClasses += $" {customCssClass}";
+    }
+    
+    var spacingClass = spacing switch
+    {
+        "large" => "py-5",
+        "small" => "py-2",
+        _ => "py-4"
+    };
+    
+    var sectionStyles = "";
+    if (!string.IsNullOrEmpty(backgroundColor))
+    {
+        sectionStyles = $"background-color: {backgroundColor};";
+    }
+    
+    // Get specific areas by alias
+    var area1 = areas?.FirstOrDefault(a => a.Alias == "area");
+    var area2 = areas?.FirstOrDefault(a => a.Alias == "area1");
+    var area3 = areas?.FirstOrDefault(a => a.Alias == "area2");
+    var area4 = areas?.FirstOrDefault(a => a.Alias == "area3");
+}
+
+<section class="@sectionClasses" style="@sectionStyles">
+    <div class="container">
+        <div class="row g-4">
+            @* Column 1 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="four-columns-item">
+                    @if (area1 != null && area1.Any())
+                    {
+                        @Html.GetBlockGridItemAreaHtml(area1)
+                    }
+                 
+                </div>
+            </div>
+            
+            @* Column 2 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="four-columns-item">
+                    @if (area2 != null && area2.Any())
+                    {
+                        @Html.GetBlockGridItemAreaHtml(area2)
+                    }
+                    
+                </div>
+            </div>
+            
+            @* Column 3 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="four-columns-item">
+                    @if (area3 != null && area3.Any())
+                    {
+                        @Html.GetBlockGridItemAreaHtml(area3)
+                        
+                    }
+               
+                </div>
+            </div>
+            
+            @* Column 4 *@
+            <div class="col-lg-3 col-md-6">
+                <div class="four-columns-item">
+                    @if (area4 != null && area4.Any())
+                    {
+                        @Html.GetBlockGridItemAreaHtml(area4)
+                    }
+                 
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

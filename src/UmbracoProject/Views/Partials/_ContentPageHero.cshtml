@@ -1,0 +1,49 @@
+@using Umbraco.Cms.Web.Common.PublishedModels
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@model IPublishedContent
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+
+@{
+    var pageTitle = Model.Value<string>("pageTitle");
+    var subtitle = Model.Value<string>("subTitle");
+
+    var pageImage = Model.Value<IPublishedContent>("pageImage");
+    var imageUrl = pageImage?.GetCropUrl(cropAlias: "hero", useCropDimensions: true, furtherOptions: "&format=webp");
+    var imageAltText = pageImage?.Value<string>("altText");
+
+    // Use page title, fallback to node name
+    var displayTitle = !string.IsNullOrEmpty(pageTitle) ? pageTitle : Model.Name;
+}
+
+<section class="content-page-hero hero-block @(imageUrl != null ? "with-image-height" : "")">
+    @if (imageUrl != null)
+    {
+        <img src="@imageUrl" class="hero-overlay" alt="@imageAltText"/>
+    }
+
+
+    <div class="container">
+        <div class="hero-content pb-3 text-left ">
+            <div class="row justify-content-left">
+                <div class="col-lg-8">
+                    <div class=" @(imageUrl != null ? "border-light" : "")">
+                        <div class="">
+                            @if (!string.IsNullOrEmpty(displayTitle))
+                            {
+                                <h1 class="hero-headline text-uppercase text-white font-weight-black display-3 fw-bold mb-4">@displayTitle</h1>
+                            }
+
+                            @if (!string.IsNullOrEmpty(subtitle))
+                            {
+                                <p class="hero-subheading font-size-14 text-white text-uppercase lead mb-4 ">@subtitle</p>
+                            }
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

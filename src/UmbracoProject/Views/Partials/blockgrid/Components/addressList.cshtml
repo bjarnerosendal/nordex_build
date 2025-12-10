@@ -1,0 +1,46 @@
+@using Umbraco.Cms.Core.Models.Blocks
+@model BlockGridItem
+
+@{
+    var addressItems = Model.Content?.Value<BlockListModel>("addressItems");
+}
+
+@if (addressItems != null && addressItems.Any())
+{
+    <div class="address-list-container container-fluid">
+        <div class="address-list row">
+            @foreach (var item in addressItems)
+            {
+                var headline = item.Content?.Value<string>("headline");
+                var content = item.Content?.Value<string>("content");
+                var backgroundColor = item.Content?.Value<string>("backgroundColor");
+                
+                // Map background color to CSS class using switch statement
+                var backgroundClass = backgroundColor switch
+                {
+                    "Orange" => "bg-orange-alt2",
+                    "Orange light" => "bg-orange-light", 
+                    "Orange lighter" => "bg-orange-lighter",
+                    _ => "bg-orange-alt2" // Default fallback
+                };
+
+
+                <div class="address-item col-12 col-md-4 @backgroundClass">
+                    <div class="py-5 px-4 w-100 h-100 text-brown">
+                    @if (!string.IsNullOrWhiteSpace(headline))
+                    {
+                        <h3 class="address-item__headline  font-size-30 font-weight-black text-brown text-uppercase">@headline</h3>
+                    }
+                    
+                    @if (content != null && !string.IsNullOrWhiteSpace(content.ToString()))
+                    {
+                        <div class="address-item__content pt-8 mt-8">
+                            @Html.Raw(content)
+                        </div>
+                    }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

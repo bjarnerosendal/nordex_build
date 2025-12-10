@@ -1,0 +1,70 @@
+@using Umbraco.Extensions
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content as Hero;
+    var settings = Model.Settings;
+    
+    var headline = content.Headline;
+    var subheading = content.Subheading;
+    var description = content.Description;
+    var heroImage = content.HeroImage;
+    
+    // Settings
+
+    var fullWidth = settings?.Value<bool>("fullWidth") ?? false;
+    
+    var containerClass = fullWidth ? "container-fluid g-0" : "container";
+    var heroClasses = "hero-block";
+    if (fullWidth) heroClasses += " hero-full-width";
+ 
+}
+
+<section class="@heroClasses" >
+    <div class="@containerClass">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-6 order-2 order-lg-1">
+                <div class="hero-content">
+                    @if (!string.IsNullOrEmpty(headline))
+                    {
+                        <h1 class="hero-headline display-4 fw-bold mb-3">@headline</h1>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(subheading))
+                    {
+                        <h2 class="hero-subheading h4 mb-4 text-muted">@subheading</h2>
+                    }
+                    
+                    @if (description != null)
+                    {
+                        <div class="hero-description lead mb-4">
+                            @Html.Raw(description)
+                        </div>
+                    }
+                    
+     
+                </div>
+            </div>
+            <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
+                <div class="hero-image-container">
+                    @if (heroImage != null)
+                    {
+                        <img src="@heroImage.Url()" 
+                             alt="@(heroImage.Value("alt") ?? headline ?? "Hero image")" 
+                             class="img-fluid rounded shadow" />
+                    }
+                    else
+                    {
+                        <div class="hero-placeholder bg-light rounded d-flex align-items-center justify-content-center">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-image fa-4x mb-3"></i>
+                                <p>Hero Image Placeholder</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</section>

@@ -1,0 +1,60 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    
+    // Get the image and text properties
+    var image = content.Value<IPublishedContent>("image");
+    
+    var altText = content.Value<string>("altText") ?? "";
+    var caption = content.Value<string>("caption") ?? "";
+    
+    var sectionClasses = "image-block";
+    var fullWidth = settings?.Value<bool>("fullWidth") ?? false;
+    var imageWidth = fullWidth ? "1850" : "950";
+
+    var containerClass = fullWidth ? "container-fluid g-0" : "container";
+}
+
+<section class="@sectionClasses">
+    <div class="@containerClass">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                @if (image != null)
+                {
+                    <figure class="image-figure">
+                        <div class="image-wrapper">
+                            <img src="@image.Url()?width=@imageWidth" 
+                                 alt="@altText" 
+                                 class="image-content"
+                                 loading="lazy">
+                        </div>
+                        @if (!string.IsNullOrEmpty(caption))
+                        {
+                            <figcaption class="image-caption">
+                                @caption
+                            </figcaption>
+                        }
+                    </figure>
+                }
+                else
+                {
+                    <div class="image-placeholder">
+                        <div class="placeholder-icon">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21,15 16,10 5,21"/>
+                            </svg>
+                        </div>
+           
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

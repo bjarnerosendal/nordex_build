@@ -1,0 +1,28 @@
+@using NPoco.Expressions
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var size = Model.Content.Value<string>("size");
+
+}
+
+
+@switch (size)
+{
+    case "small":
+        <div class="spacer-small"></div>
+        break;
+    case "medium":
+        <div class="spacer-medium"></div>
+        break;
+    case "large":
+        <div class="spacer-large"></div>
+        break;
+    default:
+        <div class="spacer-medium"></div>
+        break;
+} 
+                

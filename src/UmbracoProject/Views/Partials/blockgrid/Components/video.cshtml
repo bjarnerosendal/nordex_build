@@ -1,0 +1,109 @@
+@using Umbraco.Extensions
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    var trumpet = content.Value<string>("trumpet");
+    var headline = content.Value<string>("headline");
+    var image = content.Value<Umbraco.Cms.Core.Models.MediaWithCrops>("image");
+    var youtubeUrl = content.Value<string>("youtubeUrl");
+    
+    // Extract YouTube video ID from various URL formats
+    var videoId = ExtractYouTubeVideoId(youtubeUrl);
+    var thumbnailUrl = image?.GetCropUrl(cropAlias: "16x9", useCropDimensions: true, furtherOptions: "&format=webp&quality=90");
+    
+    // Generate unique ID for this video instance
+    var videoInstanceId = $"video-{Guid.NewGuid().ToString("N")[..8]}";
+}
+
+@functions {
+    private string ExtractYouTubeVideoId(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return string.Empty;
+        
+        // Handle various YouTube URL formats
+        var patterns = new[]
+        {
+            @"(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)",
+            @"youtube\.com\/watch\?.*v=([^&\n?#]+)"
+        };
+        
+        foreach (var pattern in patterns)
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(url, pattern);
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+        }
+        
+        return string.Empty;
+    }
+}
+
+<section class="video-block">
+    <div class="container position-relative">
+        <div class="video-content">
+            @if (!string.IsNullOrEmpty(trumpet) || !string.IsNullOrEmpty(headline))
+            {
+                <div class="video-header z-index-1 position-absolute top-0 start-0 ms-5 mt-6">
+                    @if (!string.IsNullOrEmpty(trumpet))
+                    {
+                        <span class="video-subheading text-uppercase font-size-15 font-weight-lighter text-white text-center mb-2">@trumpet</span>
+                    }
+                    <h2 class="video-headline text-white text-uppercase font-size-50 font-weight-black">@headline</h2>
+                </div>
+            } 
+        </div>
+        
+        <div class="video-container rounded-edges" id="@videoInstanceId">
+            @if (!string.IsNullOrEmpty(videoId) && image != null)
+            {
+                <!-- Video thumbnail with play button -->
+                <div class="video-thumbnail" 
+                     data-video-id="@videoId" 
+                     data-video-container="@videoInstanceId"
+                     style="background-image: url('@thumbnailUrl');">
+                    <div class="video-overlay">
+                        <button type="button" class="video-play-button" aria-label="Play video: @(headline ?? "Video")">
+                            <svg class="play-icon" width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="12" fill="rgba(255, 255, 255, 0.9)"/>
+                                <path d="M10 8l6 4-6 4V8z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Video iframe container (initially hidden) -->
+                <div class="video-iframe-container" style="display: none;">
+                    <!-- YouTube iframe will be inserted here -->
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(videoId))
+            {
+                <!-- Fallback if no image provided -->
+                <div class="video-no-thumbnail">
+                    <div class="video-overlay">
+                        <button type="button" class="video-play-button" 
+                                data-video-id="@videoId" 
+                                data-video-container="@videoInstanceId"
+                                aria-label="Play video: @(headline ?? "Video")">
+                            <svg class="play-icon" width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="12" fill="rgba(255, 255, 255, 0.9)"/>
+                                <path d="M10 8l6 4-6 4V8z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <!-- No video ID provided -->
+                <div class="video-error">
+                    <p class="text-center text-muted">Invalid YouTube URL provided</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>

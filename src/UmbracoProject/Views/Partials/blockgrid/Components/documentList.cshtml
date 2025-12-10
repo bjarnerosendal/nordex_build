@@ -1,0 +1,109 @@
+@using Umbraco.Extensions
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Models
+@model Umbraco.Cms.Core.Models.Blocks.BlockGridItem
+
+@{
+    var content = Model.Content;
+    var title = content.Value<string>("title");
+    var files = content.Value<IEnumerable<MediaWithCrops>>("files");
+    
+   
+    // Helper function to format file size
+    string FormatFileSize(long bytes)
+    {
+        string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+        double len = bytes;
+        int order = 0;
+        while (len >= 1024 && order < sizes.Length - 1)
+        {
+            order++;
+            len = len / 1024;
+        }
+        return $"{len:0.##} {sizes[order]}";
+    }
+    
+    // Get all files from the media picker and expand folders
+    var allFiles = new List<MediaWithCrops>();
+    
+    if (files != null)
+    {
+        foreach (var file in files)
+        {
+            if (file.ContentType.Alias == "Folder")
+            {
+                // If it's a folder, get all direct children
+                var folderChildren = file.Children?.Where(x => x.ContentType.Alias != "Folder");
+                if (folderChildren != null)
+                {
+                    foreach (var child in folderChildren)
+                    {
+                        if (child is MediaWithCrops childMedia)
+                        {
+                            allFiles.Add(childMedia);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // If it's a direct file, add it
+                allFiles.Add(file);
+            }
+        }
+    }
+}
+
+<div class="container-fluid document-list-block my-5 ">
+    <div class="mx-4">
+        <div class="row">
+        
+            @if (allFiles.Any())
+            {
+                @foreach (var file in allFiles)
+                {
+                    var fileUrl = file.Url();
+                    var fileName = file.Name;
+                    var fileExtension = System.IO.Path.GetExtension(fileName);
+                    var fileSizeValue = file.Value<long>("umbracoBytes");
+                    var image = file.Value<IPublishedContent>("coverImage");
+                
+
+                <div class="col-lg-2 col-md-4 col-12">
+                    <a href="@fileUrl" target="_blank" class="mb-4 d-block">
+                        <div class="document-item pb-3 rounded-edges overflow-hidden">
+                            
+                                @if (image != null)
+                                {
+                                    var coverCropUrl = image.GetCropUrl(cropAlias:"a4", useCropDimensions: true, furtherOptions: "&format=webp");
+                                    <div class="document-image mb-2">
+                                        <img src="@coverCropUrl" alt="@fileName cover" class="w-100 img-fluid" />
+                                    </div>
+                                }
+                                <div class="document-details px-3">
+                                    <h3 class="document-name font-weight-black text-uppercase">@fileName</h3>
+
+                                    <div class="document-meta">
+                                        @if (!string.IsNullOrEmpty(fileExtension))
+                                        {
+                                            <span class="document-type">@fileExtension.ToUpper().TrimStart('.')</span>
+                                        }
+                                        @if (fileSizeValue > 0)
+                                        {
+                                            <span class="document-size">@FormatFileSize(fileSizeValue)</span>
+                                        }
+                                    </div>
+                                </div>
+                        
+                            
+                        </div>
+                    </a>
+                </div>
+            }
+        
+        }
+ 
+        </div>
+    </div>
+   
+</div>
