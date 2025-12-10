@@ -65,7 +65,7 @@
 	</Target>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(configuration) == 'Release'">
-		<Exec Command="powershell .\buildFrontend.ps1" />
+		<Exec Command="powershell .\fetchAssets.ps1" />
 	</Target>
 
 </Project>
