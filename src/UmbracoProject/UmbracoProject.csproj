@@ -64,4 +64,8 @@
 		<Message Text="TagGrouper files copied successfully" Importance="high" />
 	</Target>
 
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(configuration) == 'Release'">
+		<Exec Command="powershell .\buildFrontend.ps1" />
+	</Target>
+
 </Project>
