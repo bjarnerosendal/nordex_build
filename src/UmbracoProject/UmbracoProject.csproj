@@ -10,8 +10,8 @@
 	<ItemGroup>
 		<PackageReference Include="Umbraco.Cloud.Cms" Version="17.0.0" />
 		<PackageReference Include="Umbraco.Cloud.StorageProviders.AzureBlob" Version="17.0.0" />
-		<PackageReference Include="Umbraco.Cms" Version="17.0.1" />
-		<PackageReference Include="Umbraco.Cms.DevelopmentMode.Backoffice" Version="17.0.1" />
+		<PackageReference Include="Umbraco.Cms" Version="17.0.2" />
+		<PackageReference Include="Umbraco.Cms.DevelopmentMode.Backoffice" Version="17.0.2" />
 		<PackageReference Include="Umbraco.Deploy.Cloud" Version="17.0.0" />
 		<PackageReference Include="Umbraco.Forms" Version="17.0.1" />
 		<PackageReference Include="Umbraco.Forms.Deploy" Version="17.0.0" />
@@ -47,10 +47,10 @@
 		</ItemGroup>
 
 		<!-- Copy to project wwwroot during build -->
-		<Copy SourceFiles="@(NodeTranslationFiles)" DestinationFiles="@(NodeTranslationFiles->'wwwroot\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(PublishDir)' == ''" />
+		<Copy SourceFiles="@(NodeTranslationFiles)" DestinationFiles="@(NodeTranslationFiles-&gt;'wwwroot\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(PublishDir)' == ''" />
 
 		<!-- Copy to publish folder during publish -->
-		<Copy SourceFiles="@(NodeTranslationFiles)" DestinationFiles="@(NodeTranslationFiles->'$(PublishDir)wwwroot\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(PublishDir)' != ''" />
+		<Copy SourceFiles="@(NodeTranslationFiles)" DestinationFiles="@(NodeTranslationFiles-&gt;'$(PublishDir)wwwroot\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(PublishDir)' != ''" />
 	</Target>
 
 	<!-- Automatically copy TagGrouper App_Plugins content to wwwroot on build -->
@@ -60,7 +60,7 @@
 		</ItemGroup>
 		<Message Text="Copying TagGrouper files to wwwroot..." Importance="high" />
 		<MakeDir Directories="wwwroot\App_Plugins\TagGrouper" />
-		<Copy SourceFiles="@(TagGrouperFiles)" DestinationFiles="@(TagGrouperFiles->'wwwroot\App_Plugins\TagGrouper\%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(TagGrouperFiles)" DestinationFiles="@(TagGrouperFiles-&gt;'wwwroot\App_Plugins\TagGrouper\%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
 		<Message Text="TagGrouper files copied successfully" Importance="high" />
 	</Target>
 
