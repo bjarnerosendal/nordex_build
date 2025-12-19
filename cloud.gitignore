@@ -428,5 +428,3 @@ src/NordexFood/wwwroot/frontend/assets
 !src/LocalPackages/**/*.nupkg
 !src/LocalPackages/**/*.snupkg
 !src/LocalPackages/**/*.nuspec
-
-**/git-patch.diff
